@@ -2,12 +2,12 @@
 
 
 ## After running /.start.sh
-  * To use session_ms you need to create the table in session_db, so if you are using rancher go to session_db 's shell and run the commands of [Mysql table creation](#tCreation)
+  * To use session_ms you need to create the table in session-db, so if you are using rancher go to session-db 's shell and run the commands of [Mysql table creation](#tCreation)
 
 ## Mysql table creation<a name="tCreation"></a>
   * mysql -u root -p
   * //password = 123;
-  * use session_db;
+  * use session-db;
   * create table revoked_token (id int not null auto_increment primary key, rToken varchar(255) unique);
   * exit
 

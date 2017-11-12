@@ -46,7 +46,7 @@ paths:
 
   /sign_out:
     post:
-      summary: Creates a new RevokedToken row in session_db
+      summary: Creates a new RevokedToken row in session-db
       operationId: logout
       parameters:
         - name: x-access-token

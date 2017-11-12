@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123@192.168.99.101:3303/session_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123@192.168.99.101:3303/session-db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
