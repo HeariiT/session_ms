@@ -1,0 +1,192 @@
+#Test with: http://editor.swagger.io/
+
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Sessions Microservice
+  description: Python + MySQL Database
+  contact:
+      name: Juan Sebastian Vivero
+      email: jsviveroj@unal.edu.co
+  license:
+    name: Software Architecture 2017-II
+host: 192.168.99.101:3001
+basePath: /
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /sign_in:
+    post:
+      summary: Creates a new JWT token
+      operationId: login
+      parameters:
+        - name: login credentials
+          in: body
+          required: true
+          description: User's email and password
+          schema:
+            $ref: '#/definitions/Login'
+      responses:
+        '201':
+          description: Created
+          schema:
+            $ref: '#/definitions/Token'
+        '401':
+          description: Could not verify!
+          schema:
+            $ref: '#/definitions/NotVerify'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /sign_out:
+    post:
+      summary: Creates a new RevokedToken row in session_db
+      operationId: logout
+      parameters:
+        - name: x-access-token
+          in: header
+          description: Token for revocation
+          required: True
+          type: string
+        - name: login credentials
+          in: body
+          required: false
+          description: User's email and password
+          schema:
+            $ref: '#/definitions/Login'
+      responses:
+        '200':
+          description: Added to revoked tokens table
+          schema:
+            $ref: '#/definitions/LogO'
+        '401':
+          description: Could not verify!
+          schema:
+            $ref: '#/definitions/NotVerify'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /validate:
+    post:
+      summary: Validates if a JWT token is valid or not,  if is revoked or not
+      operationId: validate
+      parameters:
+        - name: x-access-token
+          in: header
+          description: Token to validate
+          required: True
+          type: string
+        - name: login credentials
+          in: body
+          required: false
+          description: User's email and password
+          schema:
+            $ref: '#/definitions/Login'
+      responses:
+        '200':
+          description: email
+          schema:
+            $ref: '#/definitions/Email'
+        '401':
+          description: Could not verify!
+          schema:
+            $ref: '#/definitions/NotVerify'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /refresh:
+    post:
+      summary: Adds old token to revokedTokens and returns a new one
+      operationId: refresh
+      parameters:
+        - name: x-access-token
+          in: header
+          description: Token to revoke
+          required: True
+          type: string
+        - name: login credentials
+          in: body
+          required: True
+          description: User's email
+          schema:
+            $ref: '#/definitions/Login'
+      responses:
+        '200':
+          description: new Token
+          schema:
+            $ref: '#/definitions/Token'
+        '401':
+          description: Could not verify!
+          schema:
+            $ref: '#/definitions/NotVerify'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+definitions:
+
+  Login:
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+
+  Token:
+    type: object
+    properties:
+      token:
+        type: string
+
+  Email:
+    type: object
+    properties:
+      email:
+        type: string
+
+  LogO:
+    type: object
+    properties:
+      message:
+        type: string
+
+  RevokedToken:
+    type: object
+    properties:
+      id:
+        type: integer
+      rToken:
+        type: string
+
+# Errors
+
+  NotVerify:
+    type: object
+    properties:
+      WWW-Authenticate:
+        type: string
+
+  ErrorModel:
+    type: object
+    required:
+      - message
+      - code
+    properties:
+      message:
+        type: string
+      code:
+        type: number
+      description:
+        type: object

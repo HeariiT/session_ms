@@ -1,0 +1,15 @@
+version: '2'
+services:
+  session_db:
+    image: mysql
+    ports:
+      - "3303:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_DATABASE: session_db
+  session_ms:
+    build: .
+    ports:
+      - "3001:3001"
+    depends_on:
+      - session_db
